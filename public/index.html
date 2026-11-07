@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Karaoke 777 🎰 | Jackpot Party Game</title>
+  <meta name="description" content="Juego multijugador para fiestas de karaoke con jackpot de 3 ruedas: género, categoría y retos en vivo.">
+  <link rel="stylesheet" href="/css/style.css?v=4">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎰</text></svg>">
+</head>
+<body>
+  <div id="app">
+    <!-- Top Bar Navigation -->
+    <header class="top-nav">
+      <div class="brand-logo">
+        <span class="logo-badge">🎰</span>
+        <span class="brand-title">KARAOKE 777</span>
+      </div>
+
+      <div class="nav-actions">
+        <button id="btn-mode-toggle" class="mode-badge" title="Cambiar vista TV / Celular">
+          <span id="mode-icon">📺</span> <span id="mode-text">Modo TV</span>
+        </button>
+        <button id="btn-sound-toggle" class="btn-icon" title="Silenciar / Activar sonido">
+          <span id="sound-icon">🔊</span>
+        </button>
+        <button id="btn-admin-modal" class="btn-icon" title="Configurar rodillos y retos">
+          ⚙️
+        </button>
+      </div>
+    </header>
+
+    <!-- SCREEN 1: LOBBY / JOIN -->
+    <section id="screen-lobby" class="screen active">
+      <div class="lobby-container">
+        <div class="lobby-hero">
+          <h1>¡El Jackpot del <span class="highlight">Karaoke</span>!</h1>
+          <p>
+            Gira las 3 ruedas, acepta el desafío del género, la categoría y la miscelánea... 
+            ¡y salí a dar el show de tu vida mientras tus amigos reaccionan en vivo y votan tu performance!
+          </p>
+          <div class="lobby-tips">
+            <span class="tip-badge">💡 Podés jugar 100% desde los celulares (cada jugador ve todo en vivo en su pantalla) o proyectar opcionalmente en una TV.</span>
+          </div>
+        </div>
+
+        <div class="lobby-card">
+          <h2><span>🎤</span> Entrar a la Sala</h2>
+
+          <div class="form-group">
+            <label for="input-player-name">Tu Nombre / Apodo</label>
+            <input type="text" id="input-player-name" class="form-input" placeholder="Ej: Freddie, Shakira, Charly..." maxlength="18">
+          </div>
+
+          <div class="form-group">
+            <label>Elegí tu Avatar de la Noche</label>
+            <div class="avatar-grid" id="avatar-selector">
+              <button class="avatar-btn selected" data-avatar="🎤">🎤</button>
+              <button class="avatar-btn" data-avatar="🎸">🎸</button>
+              <button class="avatar-btn" data-avatar="🕺">🕺</button>
+              <button class="avatar-btn" data-avatar="💃">💃</button>
+              <button class="avatar-btn" data-avatar="👑">👑</button>
+              <button class="avatar-btn" data-avatar="🕶️">🕶️</button>
+              <button class="avatar-btn" data-avatar="🦄">🦄</button>
+              <button class="avatar-btn" data-avatar="🦁">🦁</button>
+              <button class="avatar-btn" data-avatar="🚀">🚀</button>
+              <button class="avatar-btn" data-avatar="🔥">🔥</button>
+              <button class="avatar-btn" data-avatar="🍺">🍺</button>
+              <button class="avatar-btn" data-avatar="🍕">🍕</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="input-room-code">Código de Sala</label>
+            <input type="text" id="input-room-code" class="form-input" value="777" maxlength="8" style="text-transform: uppercase;">
+          </div>
+
+          <button id="btn-join-room" class="btn-primary">
+            <span>ENTRAR A CANTAR</span> 🚀
+          </button>
+          <button id="btn-join-tv" class="btn-secondary" style="width: 100%;">
+            <span>📺 ABRIR MODO TV (SOLO PROYECCIÓN)</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: MAIN GAME & JACKPOT -->
+    <section id="screen-game" class="screen">
+      <!-- Turn Banner -->
+      <div class="turn-banner">
+        <div class="current-singer-info">
+          <div class="singer-avatar" id="current-singer-avatar">🎤</div>
+          <div class="singer-text">
+            <h3 id="current-singer-name">Esperando jugadores...</h3>
+            <p id="current-singer-status">Turno actual</p>
+          </div>
+        </div>
+        <div class="turn-status-badge" id="game-phase-badge">
+          🎰 LISTO PARA GIRAR
+        </div>
+      </div>
+
+      <div class="game-container">
+        <!-- Main Column: Jackpot + Stage -->
+        <div class="game-main">
+          <!-- Jackpot Slot Machine -->
+          <div class="jackpot-casing">
+            <div class="jackpot-header">
+              <div class="marquee-bulbs">
+                <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+                <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+                <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+              </div>
+              <h2 class="jackpot-title">KARAOKE 777</h2>
+            </div>
+
+            <!-- The 3 Reels -->
+            <div class="reels-stage">
+              <!-- Reel 1: Género -->
+              <div class="reel-wrapper">
+                <div class="reel-label">1. Género Musical</div>
+                <div class="reel-viewport" id="reel-0">
+                  <div class="reel-strip"></div>
+                </div>
+                <button class="btn-hold" id="hold-btn-0" title="Trabar este rodillo" style="display: none;">
+                  <span class="hold-led"></span>
+                  <span class="hold-text">TRABAR (HOLD)</span>
+                </button>
+              </div>
+
+              <!-- Reel 2: Categoría -->
+              <div class="reel-wrapper">
+                <div class="reel-label">2. Categoría / Estilo</div>
+                <div class="reel-viewport" id="reel-1">
+                  <div class="reel-strip"></div>
+                </div>
+                <button class="btn-hold" id="hold-btn-1" title="Trabar este rodillo" style="display: none;">
+                  <span class="hold-led"></span>
+                  <span class="hold-text">TRABAR (HOLD)</span>
+                </button>
+              </div>
+
+              <!-- Reel 3: Miscelánea / Reto -->
+              <div class="reel-wrapper">
+                <div class="reel-label">3. Reto / Miscelánea</div>
+                <div class="reel-viewport" id="reel-2">
+                  <div class="reel-strip"></div>
+                </div>
+                <button class="btn-hold" id="hold-btn-2" title="Trabar este rodillo" style="display: none;">
+                  <span class="hold-led"></span>
+                  <span class="hold-text">TRABAR (HOLD)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Jackpot Action Buttons -->
+            <div class="jackpot-actions">
+              <button id="btn-spin" class="btn-spin-big">
+                <span>GIRAR EL JACKPOT</span> 🎰
+              </button>
+              <span id="reroll-indicator" class="reroll-counter" style="display: none;">🔄 1 Giro por turno</span>
+              <button id="btn-accept-spin" class="btn-primary" style="display: none;">
+                <span>ACEPTAR DESAFÍO</span> 🎤
+              </button>
+            </div>
+          </div>
+
+          <!-- STAGE SECTION 1: SELECTION TIMER & SONG INPUT -->
+          <div id="stage-selection" class="stage-card" style="display: none;">
+            <div class="stage-card-header">
+              <h3><span>⏱️</span> Elegí tu tema para el desafío</h3>
+              <div class="timer-pill" id="selection-timer">
+                <span>⏳</span> <span id="selection-seconds">60</span>s
+              </div>
+            </div>
+
+            <!-- Premises Recap Box -->
+            <div class="premises-recap">
+              <div class="recap-item">
+                <span class="recap-icon" id="recap-genre-icon">🎸</span>
+                <div class="recap-info">
+                  <span>Género</span>
+                  <h4 id="recap-genre-name">Rock Nacional</h4>
+                </div>
+              </div>
+              <div class="recap-item">
+                <span class="recap-icon" id="recap-cat-icon">🎯</span>
+                <div class="recap-info">
+                  <span>Categoría</span>
+                  <h4 id="recap-cat-name">One-Hit Wonder</h4>
+                </div>
+              </div>
+              <div class="recap-item">
+                <span class="recap-icon" id="recap-misc-icon">👥</span>
+                <div class="recap-info">
+                  <span>Reto</span>
+                  <h4 id="recap-misc-name">Dúo Obligatorio</h4>
+                </div>
+              </div>
+            </div>
+
+            <!-- Random partner display if Duo/Trio -->
+            <div class="form-group" id="partner-select-group" style="display: none;">
+              <label id="partner-group-label">🎲 Compañero/a elegido/a al azar:</label>
+              <div id="random-partners-display" class="form-input" style="display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--neon-cyan); background: rgba(0, 229, 255, 0.08); border-color: var(--neon-cyan);">
+                -
+              </div>
+            </div>
+
+            <!-- Song title & artist inputs (only active singer on phone) -->
+            <div id="singer-selection-controls" style="display: flex; flex-direction: column; gap: 14px;">
+              <div class="song-inputs-row">
+                <div class="form-group">
+                  <label for="input-song-title">Nombre de la Canción</label>
+                  <input type="text" id="input-song-title" class="form-input" placeholder="Ej: De Música Ligera">
+                </div>
+                <div class="form-group">
+                  <label for="input-song-artist">Artista o Banda</label>
+                  <input type="text" id="input-song-artist" class="form-input" placeholder="Ej: Soda Stereo">
+                </div>
+              </div>
+
+              <!-- YouTube search helper link -->
+              <div class="helper-links">
+                <a id="link-youtube-search" href="https://www.youtube.com/results?search_query=karaoke" target="_blank" rel="noopener noreferrer" class="helper-btn">
+                  <span>🔴</span> Buscar karaoke en YouTube
+                </a>
+              </div>
+
+              <button id="btn-confirm-song" class="btn-primary">
+                <span>¡LISTOS PARA CANTAR!</span> 🎶
+              </button>
+            </div>
+
+            <!-- Message shown on other players' phones while singer chooses song -->
+            <div id="spectator-selection-msg" style="display: none; text-align: center; padding: 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); color: var(--text-muted); font-weight: 600;">
+              ⏳ Esperando a que el cantante elija su canción...
+            </div>
+          </div>
+
+          <!-- STAGE SECTION 2: LIVE PERFORMANCE -->
+          <div id="stage-performance" class="stage-card" style="display: none;">
+            <div class="stage-card-header">
+              <h3 id="stage-performance-title"><span>🔥</span> ¡EN EL ESCENARIO!</h3>
+              <div class="timer-pill" id="stage-performance-pill" style="border-color: var(--neon-green); color: var(--neon-green);">
+                <span>🎤</span> EN VIVO
+              </div>
+            </div>
+
+            <div style="text-align: center; padding: 20px 0;">
+              <h2 id="live-song-title" style="font-family: var(--font-display); font-size: 2.2rem; color: #fff; margin-bottom: 6px;">
+                Canción Elegida
+              </h2>
+              <p id="live-song-artist" style="font-size: 1.25rem; color: var(--neon-cyan); font-weight: 700;">
+                Artista
+              </p>
+              <p id="live-singers-badge" style="margin-top: 10px; color: var(--neon-gold); font-size: 1.05rem;">
+                Canta: <strong id="live-singers-names">-</strong>
+              </p>
+              <div style="display: flex; justify-content: center; margin-top: 12px;">
+                <a id="btn-live-youtube" href="https://www.youtube.com" target="karaoke_youtube" rel="noopener noreferrer" class="helper-btn">
+                  <span>🔴</span> Abrir Karaoke en YouTube
+                </a>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 10px;">
+              <button id="btn-finish-song" class="btn-primary">
+                <span>TERMINAR CANCIÓN Y ABRIR VOTACIÓN</span> 👏
+              </button>
+              <p id="spectator-performance-msg" style="display: none; color: var(--text-muted); font-weight: 600; text-align: center;">
+                🎧 ¡Disfrutá la canción! Al terminar se abrirá la votación en tu celular.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar: Scoreboard & QR Code for friends -->
+        <aside class="game-sidebar">
+          <!-- Leaderboard Card -->
+          <div class="sidebar-card">
+            <h3>
+              <span>🏆 Puntuaciones</span>
+              <span id="player-count-badge" style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal;">0 jugadores</span>
+            </h3>
+            <div class="player-list" id="scoreboard-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Join QR Code Card -->
+          <div class="sidebar-card qr-card" id="qr-sidebar-card">
+            <h3 style="margin-bottom: 0;">📱 Unirse desde el Celu</h3>
+            <div class="qr-frame">
+              <img id="qr-code-img" alt="QR para unirse" src="">
+            </div>
+            <div class="qr-info">
+              Escaneá o ingresá a:<br>
+              <code id="qr-network-url">http://...</code><br>
+              Sala: <strong id="qr-room-code" style="color: var(--neon-magenta); font-size: 1.1rem;">777</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- VOTING OVERLAY MODAL -->
+    <div id="voting-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-content" style="max-width: 540px;">
+        <div class="modal-header">
+          <h3><span>⭐</span> ¡Vota la Performance!</h3>
+          <span class="timer-pill" id="voting-timer" style="font-size: 0.95rem;">⏳ 40s</span>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+          <h2 id="voting-singer-prompt" style="font-size: 1.5rem; margin-bottom: 4px;">
+            ¿Qué tal cantó?
+          </h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Califica del 1 al 5 y elegí una distinción de honor:</p>
+
+          <div class="voting-stars" id="voting-stars-group">
+            <button class="star-btn active" data-rating="1">★</button>
+            <button class="star-btn active" data-rating="2">★</button>
+            <button class="star-btn active" data-rating="3">★</button>
+            <button class="star-btn active" data-rating="4">★</button>
+            <button class="star-btn active" data-rating="5">★</button>
+          </div>
+
+          <div class="badge-selector" id="voting-badges-group">
+            <span class="badge-tag selected" data-badge="Voz de Oro 🌟">Voz de Oro 🌟</span>
+            <span class="badge-tag" data-badge="Pura Actitud 🔥">Pura Actitud 🔥</span>
+            <span class="badge-tag" data-badge="Desafinó con Estilo 😂">Desafinó con Estilo 😂</span>
+            <span class="badge-tag" data-badge="Cumplió el Reto 🎯">Cumplió el Reto 🎯</span>
+          </div>
+
+          <div style="margin-top: 24px;">
+            <button id="btn-submit-vote" class="btn-primary" style="width: 100%;">
+              <span>ENVIAR MI VOTO</span> 🌟
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROUND RESULTS MODAL -->
+    <div id="results-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-content" style="max-width: 560px; text-align: center;">
+        <div class="modal-header">
+          <h3 style="color: var(--neon-gold); width: 100%;">🎉 RESULTADOS DE LA RONDA</h3>
+        </div>
+        <div class="modal-body">
+          <div class="results-score-big" id="result-points-earned">+80 pts</div>
+          <h3 id="result-singer-name" style="font-size: 1.5rem; color: #fff;">¡Gran show!</h3>
+          <p id="result-details" style="color: var(--text-muted); font-size: 1.1rem; margin: 10px 0;">
+            Promedio: 4.8 ★ con 4 votos
+          </p>
+
+          <div style="margin-top: 20px;">
+            <button id="btn-next-turn" class="btn-primary" style="width: 100%;">
+              <span>SIGUIENTE TURNO</span> 🚀
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN MODAL: REELS & CHALLENGES EDITOR -->
+    <div id="admin-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><span>⚙️</span> Personalizar Rodillos del Jackpot</h3>
+          <button id="btn-close-admin" class="btn-icon">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="admin-tabs">
+            <button class="admin-tab-btn active" data-section="genres">1. Géneros</button>
+            <button class="admin-tab-btn" data-section="categories">2. Categorías</button>
+            <button class="admin-tab-btn" data-section="miscellaneous">3. Retos / Misceláneas</button>
+          </div>
+
+          <!-- Add Item Form -->
+          <div class="admin-add-form">
+            <input type="text" id="admin-new-icon" class="form-input" placeholder="Icono" value="🎵" maxlength="4" style="text-align: center;">
+            <input type="text" id="admin-new-name" class="form-input" placeholder="Nombre (ej: Cumbia Villera)">
+            <input type="text" id="admin-new-hint" class="form-input" placeholder="Descripción o artistas sugeridos">
+            <button id="btn-admin-add-item" class="btn-secondary" style="white-space: nowrap;">
+              + Agregar
+            </button>
+          </div>
+
+          <!-- Items List -->
+          <div class="admin-items-list" id="admin-items-list">
+            <!-- Dynamically populated -->
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 14px;">
+            <button id="btn-admin-reset-default" class="btn-secondary" style="color: #ff9900; border-color: #ff9900;">
+              🔄 Restaurar Valores por Defecto
+            </button>
+            <button id="btn-admin-save-close" class="btn-primary">
+              Guardar y Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast-container"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/sound.js?v=4"></script>
+  <script src="/js/confetti.js?v=4"></script>
+  <script src="/js/slot.js?v=4"></script>
+  <script src="/js/app.js?v=4"></script>
+</body>
+</html>
