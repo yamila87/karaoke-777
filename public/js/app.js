@@ -145,7 +145,9 @@
 
   // Update QR Code Display
   async function updateQrCode(networkUrl, roomCode) {
-    const url = networkUrl ? `${networkUrl}?room=${roomCode}` : window.location.href;
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const baseUrl = !isLocalhost ? window.location.origin : (networkUrl || window.location.origin);
+    const url = `${baseUrl}?room=${roomCode}`;
     try {
       const res = await fetch(`/api/qr?url=${encodeURIComponent(url)}`);
       const data = await res.json();
@@ -154,7 +156,7 @@
       const roomLabel = document.getElementById('qr-room-code');
 
       if (qrImg && data.qr) qrImg.src = data.qr;
-      if (networkLabel) networkLabel.textContent = networkUrl || window.location.host;
+      if (networkLabel) networkLabel.textContent = baseUrl;
       if (roomLabel) roomLabel.textContent = roomCode;
     } catch (e) {
       console.error('Failed to load QR:', e);

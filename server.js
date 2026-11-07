@@ -70,6 +70,7 @@ function getLocalIpAddress() {
 }
 
 const localIp = getLocalIpAddress();
+const getPublicBaseUrl = () => process.env.RENDER_EXTERNAL_URL || `http://${localIp}:${PORT}`;
 
 app.use(express.json());
 app.use(
@@ -84,7 +85,7 @@ app.use(
 
 // QR code API endpoint
 app.get('/api/qr', async (req, res) => {
-  const url = req.query.url || `http://${localIp}:${PORT}`;
+  const url = req.query.url || getPublicBaseUrl();
   try {
     const qrDataUrl = await QRCode.toDataURL(url, {
       margin: 1,
@@ -106,7 +107,7 @@ app.get('/api/network-info', (req, res) => {
     ip: localIp,
     port: PORT,
     localUrl: `http://localhost:${PORT}`,
-    networkUrl: `http://${localIp}:${PORT}`
+    networkUrl: getPublicBaseUrl()
   });
 });
 
@@ -264,7 +265,7 @@ io.on('connection', (socket) => {
         player: tvViewer,
         roomCode: code,
         isHost: true,
-        networkUrl: `http://${localIp}:${PORT}`
+        networkUrl: getPublicBaseUrl()
       });
       io.to(code).emit('room_state', getSafeRoomData(room));
 
@@ -329,7 +330,7 @@ io.on('connection', (socket) => {
       player,
       roomCode: code,
       isHost: false,
-      networkUrl: `http://${localIp}:${PORT}`
+      networkUrl: getPublicBaseUrl()
     });
     io.to(code).emit('room_state', getSafeRoomData(room));
 
